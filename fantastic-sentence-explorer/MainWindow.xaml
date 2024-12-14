@@ -1,0 +1,37 @@
+﻿<Window x:Class="fantastic_sentence_explorer.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:fantastic_sentence_explorer"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition Width="13*"/>
+        </Grid.ColumnDefinitions>
+        <ListBox x:Name="FileList" SelectionChanged="FileList_SelectionChanged" />
+        <Grid Grid.Column="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+
+            <TextBlock FontSize="25" HorizontalAlignment="Center" VerticalAlignment="Center">英文名称</TextBlock>
+            <TextBlock FontSize="25" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center">中文译名</TextBlock>
+            <TextBlock FontSize="25" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center">原名</TextBlock>
+            <TextBlock FontSize="25" Grid.Row="3" HorizontalAlignment="Center" VerticalAlignment="Center">Bangumi 链接</TextBlock>
+            <TextBox x:Name="EnglishNameBox" Grid.Column="1" FontSize="25" TextWrapping="WrapWithOverflow">英文名称</TextBox>
+            <TextBox x:Name="ZHTranslationBox" Grid.Column="1" FontSize="25" Grid.Row="1" TextWrapping="WrapWithOverflow">中文译名</TextBox>
+            <TextBox x:Name="NameBox" Grid.Column="1" FontSize="25" Grid.Row="2" TextWrapping="WrapWithOverflow">原名</TextBox>
+            <TextBox x:Name="BangumiUrlBox" Grid.Column="1" FontSize="25" Grid.Row="3" TextWrapping="WrapWithOverflow">Bangumi 链接</TextBox>
+        </Grid>
+    </Grid>
+</Window>
