@@ -34,6 +34,7 @@ namespace fantastic_sentence_explorer
             {
                 FileList.Items.Add(item);
             }
+            
         }
 
         private void FileList_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -42,6 +43,7 @@ namespace fantastic_sentence_explorer
             ZHTranslationBox.Text = items[FileList.SelectedIndex].TranslationName;
             NameBox.Text = items[FileList.SelectedIndex].OriginalName;
             BangumiUrlBox.Text=items[FileList.SelectedIndex].BangumiUrl;
+            SentenceGrid.ItemsSource = items[FileList.SelectedIndex].Sentences;
         }
     }
 }

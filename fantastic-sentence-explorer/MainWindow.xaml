@@ -22,16 +22,19 @@
                 <RowDefinition/>
                 <RowDefinition/>
                 <RowDefinition/>
+                <RowDefinition Height="5*"/>
             </Grid.RowDefinitions>
 
             <TextBlock FontSize="25" HorizontalAlignment="Center" VerticalAlignment="Center">英文名称</TextBlock>
             <TextBlock FontSize="25" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center">中文译名</TextBlock>
             <TextBlock FontSize="25" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center">原名</TextBlock>
             <TextBlock FontSize="25" Grid.Row="3" HorizontalAlignment="Center" VerticalAlignment="Center">Bangumi 链接</TextBlock>
-            <TextBox x:Name="EnglishNameBox" Grid.Column="1" FontSize="25" TextWrapping="WrapWithOverflow">英文名称</TextBox>
-            <TextBox x:Name="ZHTranslationBox" Grid.Column="1" FontSize="25" Grid.Row="1" TextWrapping="WrapWithOverflow">中文译名</TextBox>
-            <TextBox x:Name="NameBox" Grid.Column="1" FontSize="25" Grid.Row="2" TextWrapping="WrapWithOverflow">原名</TextBox>
-            <TextBox x:Name="BangumiUrlBox" Grid.Column="1" FontSize="25" Grid.Row="3" TextWrapping="WrapWithOverflow">Bangumi 链接</TextBox>
+            <TextBox x:Name="EnglishNameBox" Grid.Column="1" FontSize="15" TextWrapping="WrapWithOverflow">英文名称</TextBox>
+            <TextBox x:Name="ZHTranslationBox" Grid.Column="1" FontSize="15" Grid.Row="1" TextWrapping="WrapWithOverflow">中文译名</TextBox>
+            <TextBox x:Name="NameBox" Grid.Column="1" FontSize="15" Grid.Row="2" TextWrapping="WrapWithOverflow">原名</TextBox>
+            <TextBox x:Name="BangumiUrlBox" Grid.Column="1" FontSize="15" Grid.Row="3" TextWrapping="WrapWithOverflow">Bangumi 链接</TextBox>
+            <DataGrid x:Name="SentenceGrid" Grid.Row="4" Grid.ColumnSpan="2" AutoGenerateColumns="True"/>
+
         </Grid>
     </Grid>
 </Window>

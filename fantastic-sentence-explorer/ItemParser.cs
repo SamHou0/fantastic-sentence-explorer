@@ -18,11 +18,11 @@ namespace fantastic_sentence_explorer
             {
                 string[] content = File.ReadAllLines(dir + "\\zh.md");
                 List<Sentence> sentences = new List<Sentence>();
-                for (int i = 14; i < content.Length-2; i++)
+                for (int i = 14; i < content.Length; i++)
                 {
                     string[] sentenceContent = content[i].Split('|');
-                    sentences.Add(new Sentence(sentenceContent[2], 
-                        sentenceContent[1], sentenceContent[0]));
+                    sentences.Add(new Sentence(sentenceContent[3], 
+                        sentenceContent[2], sentenceContent[1]));
 
                 }
                 string urlContent = content[6].Split('|')[2];
