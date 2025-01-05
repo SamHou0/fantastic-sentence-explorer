@@ -11,12 +11,15 @@ namespace fantastic_sentence_explorer
     /// </summary>
     public partial class MainWindow : Window
     {
+        /// <summary>
+        /// Whether the data of text boxes is changing
+        /// </summary>
+        bool isChanging = false;
         public static string FolderPath { get; set; } = "";
         List<Item> items = new List<Item>();
         public MainWindow()
         {
             InitializeComponent();
-            System.Windows.Forms.Application.EnableVisualStyles();  // Get rid of 20th 3D ui
             FolderPath = InputBox("请输入数据文件夹位置", "Fantastic Sentence Explorer");
             if (FolderPath == "")
             {
@@ -29,25 +32,96 @@ namespace fantastic_sentence_explorer
                 FolderPath = InputBox("未找到对应文件夹，请重新输入", "Fantastic Sentence Explorer");
             }
             items = ItemParser.Parse(FolderPath);
-            foreach (Item item in items)
-            {
-                fileList.Items.Add(item);
-            }
+            fileList.ItemsSource = items;
 
         }
-
+        #region FileList
         private void FileList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            englishNameBox.Text = items[fileList.SelectedIndex].EnglishName;
-            zhTranslationBox.Text = items[fileList.SelectedIndex].TranslationName;
-            nameBox.Text = items[fileList.SelectedIndex].OriginalName;
-            bangumiUrlBox.Text = items[fileList.SelectedIndex].BangumiUrl;
-            sentenceGrid.ItemsSource = items[fileList.SelectedIndex].Sentences;
+            if (fileList.SelectedIndex >= 0)
+            {
+                isChanging = true;
+                englishNameBox.Text = items[fileList.SelectedIndex].EnglishName;
+                zhTranslationBox.Text = items[fileList.SelectedIndex].TranslationName;
+                nameBox.Text = items[fileList.SelectedIndex].OriginalName;
+                bangumiUrlBox.Text = items[fileList.SelectedIndex].BangumiUrl;
+                sentenceGrid.ItemsSource = items[fileList.SelectedIndex].Sentences;
+                isChanging = false;
+            }
+        }
+        /// <summary>
+        /// Context menu for file list
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void DeleteFileMenu_Click(object sender, RoutedEventArgs e)
+        {
+            if (fileList.SelectedIndex >= 0)
+            {
+                items.RemoveAt(fileList.SelectedIndex);
+            }
+            fileList.Items.Refresh();
+        }
+        #endregion
+        #region Buttons
+        private async void SaveButton_Click(object sender, RoutedEventArgs e)
+        {
+            saveButton.IsEnabled = false;
+            saveButton.DataContext = "正在保存";
+            await ItemParser.SaveAsync(items, FolderPath);
+            saveButton.IsEnabled = true;
         }
 
-        private void SaveButton_Click(object sender, RoutedEventArgs e)
+        private void AddItemButton_Click(object sender, RoutedEventArgs e)
         {
-            ItemParser.Save(items, FolderPath);
+            if (fileList.SelectedIndex >= 0)
+            {
+                items[fileList.SelectedIndex].Sentences.Add(new Sentence("", "", "", ""));
+            }
+            sentenceGrid.Items.Refresh();
+        }
+        private void AddButton_Click(object sender, RoutedEventArgs e)
+        {
+            items.Add(new Item("新的文件", "", "", "", new List<Sentence>()));
+            fileList.Items.Refresh();
+            fileList.SelectedIndex = items.Count - 1;
+        }
+        #endregion
+        /// <summary>
+        /// Save the data when closing the window
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (IsLoaded)
+            {
+                MessageBoxResult result = MessageBox.Show("要保存更改吗？", "Fantastic Sentence Explorer",
+                    MessageBoxButton.YesNoCancel, MessageBoxImage.Warning);
+                if (result == MessageBoxResult.Yes)
+                {
+                    ItemParser.Save(items, FolderPath);
+                }
+                else if (result == MessageBoxResult.Cancel)
+                {
+                    e.Cancel = true;
+                }
+            }
+        }
+
+        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (fileList.SelectedIndex >= 0 && isChanging == false)
+            {
+                items[fileList.SelectedIndex].EnglishName = englishNameBox.Text;
+                items[fileList.SelectedIndex].TranslationName = zhTranslationBox.Text;
+                items[fileList.SelectedIndex].OriginalName = nameBox.Text;
+                items[fileList.SelectedIndex].BangumiUrl = bangumiUrlBox.Text;
+            }
+            if(sender== englishNameBox)
+            {
+                fileList.Items.Refresh();
+            }
         }
     }
 }

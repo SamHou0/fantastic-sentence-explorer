@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace fantastic_sentence_explorer
 {
@@ -21,24 +22,36 @@ namespace fantastic_sentence_explorer
                 for (int i = 14; i < content.Length; i++)
                 {
                     string[] sentenceContent = content[i].Split('|');
-                    sentences.Add(new Sentence(sentenceContent[1], 
+                    sentences.Add(new Sentence(sentenceContent[1],
                         sentenceContent[2], sentenceContent[3], sentenceContent[4]));
 
                 }
                 string urlContent = content[6].Split('|')[2];
-                int urlIndex = urlContent.IndexOf('(')+1;
+                int urlIndex = urlContent.IndexOf('(') + 1;
                 urlContent = urlContent.Substring(urlIndex);
                 items.Add(new(content[0].Substring(2), content[8].Split('|')[2], content[7].Split('|')[2],
-                    urlContent.Remove(urlContent.Length-1), sentences));
+                    urlContent.Remove(urlContent.Length - 1), sentences));
             }
             return items;
         }
+        public async static Task SaveAsync(List<Item> items, string path)
+        {
+            await Task.Run(() => Save(items, path));
+        }
+
         public static void Save(List<Item> items, string path)
         {
+
+            // Clear the sub directories
+            Directory.GetDirectories(path);
+            foreach (string dir in Directory.GetDirectories(path))
+            {
+                Directory.Delete(dir, true);
+            }
             foreach (Item item in items)
             {
                 // Replace space with dash
-                string dir = path + "\\" + item.EnglishName.Replace(" ","-");
+                string dir = path + "\\" + item.EnglishName.Replace(" ", "-");
                 Directory.CreateDirectory(dir);
                 // Create the markdown file
                 string[] content = new string[item.Sentences.Count + 14];
