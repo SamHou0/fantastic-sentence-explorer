@@ -11,11 +11,13 @@ namespace fantastic_sentence_explorer.Data
         public string Time { get; set; }
         public string Translation { get; set; }
         public string Original { get; set; }
-        public Sentence(string time,string translation,string original)
+        public string Explanation { get; set; }
+        public Sentence(string original,string translation,string time,string explanation)
         {
-            Time = time;
-            Translation = translation;
             Original = original;
+            Translation = translation;
+            Time = time;
+            Explanation = explanation;
         }
     }
 }

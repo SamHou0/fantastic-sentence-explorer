@@ -44,5 +44,10 @@ namespace fantastic_sentence_explorer
             BangumiUrlBox.Text = items[FileList.SelectedIndex].BangumiUrl;
             SentenceGrid.ItemsSource = items[FileList.SelectedIndex].Sentences;
         }
+
+        private void saveButton_Click(object sender, RoutedEventArgs e)
+        {
+            ItemParser.Save(items, FolderPath);
+        }
     }
 }

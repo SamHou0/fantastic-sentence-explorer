@@ -21,8 +21,8 @@ namespace fantastic_sentence_explorer
                 for (int i = 14; i < content.Length; i++)
                 {
                     string[] sentenceContent = content[i].Split('|');
-                    sentences.Add(new Sentence(sentenceContent[3], 
-                        sentenceContent[2], sentenceContent[1]));
+                    sentences.Add(new Sentence(sentenceContent[1], 
+                        sentenceContent[2], sentenceContent[3], sentenceContent[4]));
 
                 }
                 string urlContent = content[6].Split('|')[2];
@@ -32,7 +32,37 @@ namespace fantastic_sentence_explorer
                     urlContent.Remove(urlContent.Length-1), sentences));
             }
             return items;
-
+        }
+        public static void Save(List<Item> items, string path)
+        {
+            foreach (Item item in items)
+            {
+                // Replace space with dash
+                string dir = path + "\\" + item.EnglishName.Replace(" ","-");
+                Directory.CreateDirectory(dir);
+                // Create the markdown file
+                string[] content = new string[item.Sentences.Count + 14];
+                content[0] = "# " + item.EnglishName;
+                content[1] = "";
+                content[2] = "## 信息";
+                content[3] = "";
+                content[4] = "|项|详细信息|";
+                content[5] = "|-|-|";
+                content[6] = "|链接|[Bangumi](" + item.BangumiUrl + ")|";
+                content[7] = "|原名|" + item.OriginalName + "|";
+                content[8] = "|中文译名|" + item.TranslationName + "|";
+                content[9] = "";
+                content[10] = "## 金句";
+                content[11] = "";
+                content[12] = "|原文|译文|时间点|解析|";
+                content[13] = "|-|-|-|-|";
+                for (int i = 0; i < item.Sentences.Count; i++)
+                {
+                    content[i + 14] = "|" + item.Sentences[i].Original + "|" + item.Sentences[i].Translation + "|" +
+                        item.Sentences[i].Time + "|" + item.Sentences[i].Explanation + "|";
+                }
+                File.WriteAllLines(dir + "\\zh.md", content);
+            }
         }
     }
 }
