@@ -12,7 +12,7 @@ namespace fantastic_sentence_explorer
     public partial class MainWindow : Window
     {
         public static string FolderPath { get; set; } = "";
-        List<Item> items;
+        List<Item> items = new List<Item>();
         public MainWindow()
         {
             InitializeComponent();
@@ -31,21 +31,21 @@ namespace fantastic_sentence_explorer
             items = ItemParser.Parse(FolderPath);
             foreach (Item item in items)
             {
-                FileList.Items.Add(item);
+                fileList.Items.Add(item);
             }
 
         }
 
         private void FileList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            EnglishNameBox.Text = items[FileList.SelectedIndex].EnglishName;
-            ZHTranslationBox.Text = items[FileList.SelectedIndex].TranslationName;
-            NameBox.Text = items[FileList.SelectedIndex].OriginalName;
-            BangumiUrlBox.Text = items[FileList.SelectedIndex].BangumiUrl;
-            SentenceGrid.ItemsSource = items[FileList.SelectedIndex].Sentences;
+            englishNameBox.Text = items[fileList.SelectedIndex].EnglishName;
+            zhTranslationBox.Text = items[fileList.SelectedIndex].TranslationName;
+            nameBox.Text = items[fileList.SelectedIndex].OriginalName;
+            bangumiUrlBox.Text = items[fileList.SelectedIndex].BangumiUrl;
+            sentenceGrid.ItemsSource = items[fileList.SelectedIndex].Sentences;
         }
 
-        private void saveButton_Click(object sender, RoutedEventArgs e)
+        private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
             ItemParser.Save(items, FolderPath);
         }
