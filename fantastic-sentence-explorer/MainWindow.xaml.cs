@@ -20,7 +20,7 @@ namespace fantastic_sentence_explorer
         public MainWindow()
         {
             InitializeComponent();
-            FolderPath = InputBox("请输入数据文件夹位置", "Fantastic Sentence Explorer");
+            FolderPath = InputBox("请输入数据文件夹位置", App.DisplayName);
             if (FolderPath == "")
             {
                 Close();
@@ -29,11 +29,11 @@ namespace fantastic_sentence_explorer
             // Button "Cancel" clicked
             while (!Directory.Exists(FolderPath))
             {
-                FolderPath = InputBox("未找到对应文件夹，请重新输入", "Fantastic Sentence Explorer");
+                FolderPath = InputBox("未找到对应文件夹，请重新输入", App.DisplayName);
             }
             items = ItemParser.Parse(FolderPath);
             fileList.ItemsSource = items;
-
+            this.Title = App.DisplayName;
         }
         #region FileList
         private void FileList_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -90,13 +90,11 @@ namespace fantastic_sentence_explorer
         /// <summary>
         /// Save the data when closing the window
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             if (IsLoaded)
             {
-                MessageBoxResult result = MessageBox.Show("要保存更改吗？", "Fantastic Sentence Explorer",
+                MessageBoxResult result = MessageBox.Show("要保存更改吗？", App.DisplayName,
                     MessageBoxButton.YesNoCancel, MessageBoxImage.Warning);
                 if (result == MessageBoxResult.Yes)
                 {
