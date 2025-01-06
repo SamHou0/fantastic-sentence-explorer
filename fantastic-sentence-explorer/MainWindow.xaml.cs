@@ -2,44 +2,63 @@
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using Microsoft.VisualBasic;
 using static Microsoft.VisualBasic.Interaction;
+using System.Windows.Input;
 
-namespace fantastic_sentence_explorer
-{
+namespace fantastic_sentence_explorer {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
-    {
+    public partial class MainWindow : Window {
         /// <summary>
         /// Whether the data of text boxes is changing
         /// </summary>
         bool isChanging = false;
         public static string FolderPath { get; set; } = "";
         List<Item> items = new List<Item>();
-        public MainWindow()
-        {
+        public MainWindow() {
             InitializeComponent();
-            FolderPath = InputBox("请输入数据文件夹位置", "Fantastic Sentence Explorer");
-            if (FolderPath == "")
-            {
+            this.Title = App.DisplayName;
+            FolderPath = InputBox("请输入数据文件夹位置", App.DisplayName);
+            if (FolderPath == "") {
                 Close();
                 return;
             }
             // Button "Cancel" clicked
-            while (!Directory.Exists(FolderPath))
-            {
-                FolderPath = InputBox("未找到对应文件夹，请重新输入", "Fantastic Sentence Explorer");
+            while (!Directory.Exists(FolderPath)) {
+                FolderPath = InputBox("未找到对应文件夹，请重新输入", App.DisplayName);
             }
-            items = ItemParser.Parse(FolderPath);
-            fileList.ItemsSource = items;
+            this.pathTextBox.Text = FolderPath;
+            loadItems(FolderPath);
+        }
 
+        private void loadItems(string path, int flag = 0) {
+            try {
+                items = ItemParser.Parse(path);
+                fileList.ItemsSource = items;
+                FolderPath = path;
+                this.pathTextBox.Text = path;
+                this.fileList.Focus();
+            } catch {
+                switch (flag) {
+                    case 0:
+                        MsgBox("读取失败，请检查文件夹内容是否正确", MsgBoxStyle.Critical, App.DisplayName);
+                        this.pathTextBox.Text = FolderPath;
+                        this.pathTextBox.Focus();
+                        this.pathTextBox.SelectAll();
+                        break;
+                    case 1:
+                        this.pathTextBox.Text = FolderPath;
+                        break;
+                    default:
+                        break;
+                }
+            }
         }
         #region FileList
-        private void FileList_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (fileList.SelectedIndex >= 0)
-            {
+        private void FileList_SelectionChanged(object sender, SelectionChangedEventArgs e) {
+            if (fileList.SelectedIndex >= 0) {
                 isChanging = true;
                 englishNameBox.Text = items[fileList.SelectedIndex].EnglishName;
                 zhTranslationBox.Text = items[fileList.SelectedIndex].TranslationName;
@@ -54,34 +73,28 @@ namespace fantastic_sentence_explorer
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void DeleteFileMenu_Click(object sender, RoutedEventArgs e)
-        {
-            if (fileList.SelectedIndex >= 0)
-            {
+        private void DeleteFileMenu_Click(object sender, RoutedEventArgs e) {
+            if (fileList.SelectedIndex >= 0) {
                 items.RemoveAt(fileList.SelectedIndex);
             }
             fileList.Items.Refresh();
         }
         #endregion
         #region Buttons
-        private async void SaveButton_Click(object sender, RoutedEventArgs e)
-        {
+        private async void SaveButton_Click(object sender, RoutedEventArgs e) {
             saveButton.IsEnabled = false;
             saveButton.DataContext = "正在保存";
             await ItemParser.SaveAsync(items, FolderPath);
             saveButton.IsEnabled = true;
         }
 
-        private void AddItemButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (fileList.SelectedIndex >= 0)
-            {
+        private void AddItemButton_Click(object sender, RoutedEventArgs e) {
+            if (fileList.SelectedIndex >= 0) {
                 items[fileList.SelectedIndex].Sentences.Add(new Sentence("", "", "", ""));
             }
             sentenceGrid.Items.Refresh();
         }
-        private void AddButton_Click(object sender, RoutedEventArgs e)
-        {
+        private void AddButton_Click(object sender, RoutedEventArgs e) {
             items.Add(new Item("新的文件", "", "", "", new List<Sentence>()));
             fileList.Items.Refresh();
             fileList.SelectedIndex = items.Count - 1;
@@ -92,35 +105,38 @@ namespace fantastic_sentence_explorer
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            if (IsLoaded)
-            {
-                MessageBoxResult result = MessageBox.Show("要保存更改吗？", "Fantastic Sentence Explorer",
-                    MessageBoxButton.YesNoCancel, MessageBoxImage.Warning);
-                if (result == MessageBoxResult.Yes)
-                {
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e) {
+            if (IsLoaded) {
+                MessageBoxResult result = MessageBox.Show("要保存更改吗？", App.DisplayName, MessageBoxButton.YesNoCancel, MessageBoxImage.Warning);
+                if (result == MessageBoxResult.Yes) {
                     ItemParser.Save(items, FolderPath);
-                }
-                else if (result == MessageBoxResult.Cancel)
-                {
+                } else if (result == MessageBoxResult.Cancel) {
                     e.Cancel = true;
                 }
             }
         }
 
-        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            if (fileList.SelectedIndex >= 0 && isChanging == false)
-            {
+        private void TextBox_TextChanged(object sender, TextChangedEventArgs e) {
+            if (fileList.SelectedIndex >= 0 && isChanging == false) {
                 items[fileList.SelectedIndex].EnglishName = englishNameBox.Text;
                 items[fileList.SelectedIndex].TranslationName = zhTranslationBox.Text;
                 items[fileList.SelectedIndex].OriginalName = nameBox.Text;
                 items[fileList.SelectedIndex].BangumiUrl = bangumiUrlBox.Text;
             }
-            if(sender== englishNameBox)
-            {
+            if (sender == englishNameBox) {
                 fileList.Items.Refresh();
+            }
+        }
+
+        private void pathTextBox_LostFocus(object sender, RoutedEventArgs e) {
+            loadItems(this.pathTextBox.Text);
+        }
+
+        private void pathTextBox_KeyDown(object sender, System.Windows.Input.KeyEventArgs e) {
+            if (e.Key == Key.Enter) {
+                loadItems(pathTextBox.Text);
+            } else if (e.Key == Key.Escape) {
+                this.pathTextBox.Text = FolderPath;
             }
         }
     }

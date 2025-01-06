@@ -9,6 +9,7 @@ namespace fantastic_sentence_explorer
     /// </summary>
     public partial class App : System.Windows.Application
     {
+        public readonly static string DisplayName = "Fantastic Sentence Explorer";
     }
 
 }
