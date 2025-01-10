@@ -11,4 +11,12 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
 
+  <ItemGroup>
+    <EditorConfigFiles Remove="D:\fantastic-sentence-explorer\fantastic-sentence-explorer\.editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="D:\fantastic-sentence-explorer\fantastic-sentence-explorer\.editorconfig" />
+  </ItemGroup>
+
 </Project>
