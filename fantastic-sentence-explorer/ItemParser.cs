@@ -1,11 +1,5 @@
-﻿using fantastic_sentence_explorer.Data;
-using System;
-using System.Collections.Generic;
+using fantastic_sentence_explorer.Data;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
 
 namespace fantastic_sentence_explorer
 {
@@ -24,13 +18,11 @@ namespace fantastic_sentence_explorer
                     string[] sentenceContent = content[i].Split('|');
                     sentences.Add(new Sentence(sentenceContent[1],
                         sentenceContent[2], sentenceContent[3], sentenceContent[4]));
-
                 }
                 string urlContent = content[6].Split('|')[2];
                 int urlIndex = urlContent.IndexOf('(') + 1;
                 urlContent = urlContent.Substring(urlIndex);
-                items.Add(new(content[0].Substring(2), content[8].Split('|')[2], content[7].Split('|')[2],
-                    urlContent.Remove(urlContent.Length - 1), sentences));
+                items.Add(new(content[0].Substring(2), content[8].Split('|')[2], content[7].Split('|')[2], urlContent.Remove(urlContent.Length - 1), sentences));
             }
             return items;
         }
