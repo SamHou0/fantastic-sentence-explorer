@@ -5,6 +5,11 @@ namespace fantastic_sentence_explorer
 {
     internal static class ItemParser
     {
+        /// <summary>
+        /// Define special characters
+        /// </summary>
+        private static char[] specialCharacters =
+            ['\\', '/', ':', '*', '?', '<', '>', '|',' '];
         public static List<Item> Parse(string path)
         {
             List<Item> items = new List<Item>();
@@ -42,8 +47,13 @@ namespace fantastic_sentence_explorer
             }
             foreach (Item item in items)
             {
-                // Replace space with dash
-                string dir = path + "\\" + item.EnglishName.Replace(" ", "-");
+                // Replace special characters with dash
+                string name= item.EnglishName;
+                foreach (char c in specialCharacters)
+                {
+                    name = name.Replace(c, '-');
+                }
+                string dir = path + "\\" + name;
                 Directory.CreateDirectory(dir);
                 // Create the markdown file
                 string[] content = new string[item.Sentences.Count + 14];
